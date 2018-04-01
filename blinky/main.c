@@ -25,8 +25,6 @@ int main(void)
         GPIOA->ODR &= ~(1<<7);
 
         delay();
-        delay();
-        delay();
 
         GPIOA->ODR &= ~(1<<6);
         GPIOA->ODR |= 1<<7;
