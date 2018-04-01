@@ -1,31 +1,38 @@
-
-
-#define USE_STDPERIPH_DRIVER
 #include "stm32f4xx.h"
- 
 
-//Quick hack, approximately 1ms delay
-void ms_delay(int ms)
-{
-   while (ms-- > 0) {
-      volatile int x=5971;
-      while (x-- > 0)
-         __asm("nop");
-   }
+
+void delay() {
+    for(unsigned int c = 0; c < 100; c++) {
+        for(volatile unsigned int i = 0; i < 10000; i++);
+    }
 }
-
-
 
 //Flash orange LED at about 1hz
 int main(void)
 {
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;  // enable the clock to GPIOD
-    __asm("dsb");                         // stall instruction pipeline, until instruction completes, as
-                                          //    per Errata 2.1.13, "Delay after an RCC peripheral clock enabling"
-    GPIOD->MODER = (1 << 26);             // set pin 13 to be general purpose output
 
-    for (;;) {
-       ms_delay(500);
-       GPIOD->ODR ^= (1 << 13);           // Toggle the pin 
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+    GPIOA->MODER &= ~GPIO_MODER_MODER7;
+    GPIOA->MODER |= 0b01 << 14;
+    GPIOA->MODER &= ~GPIO_MODER_MODER6;
+    GPIOA->MODER |= 0b01 << 12;
+
+    GPIOA->ODR |= 1 <<7;
+
+    for(;;) {
+
+        GPIOA->ODR |= 1<<6;
+        GPIOA->ODR &= ~(1<<7);
+
+        delay();
+        delay();
+        delay();
+
+        GPIOA->ODR &= ~(1<<6);
+        GPIOA->ODR |= 1<<7;
+
+        delay();
+
+
     }
 }
