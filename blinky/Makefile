@@ -1,1 +1,0 @@
-include ../STM32F4-Discovery_FW_V1.1.0/make.con
